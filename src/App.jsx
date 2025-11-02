@@ -1,31 +1,28 @@
-import React from 'react';
-import Hero from './components/Hero';
-import DualProfile from './components/DualProfile';
-import Publications from './components/Publications';
-import Projects from './components/Projects';
+import React, { useEffect, useState } from 'react';
+import Layout from './components/Layout';
+import HomePage from './components/HomePage';
+import AuthorPage from './components/AuthorPage';
+import WorkPage from './components/WorkPage';
 
 function App() {
+  const [route, setRoute] = useState(() => (window.location.hash || '#/'));
+
+  useEffect(() => {
+    const handle = () => setRoute(window.location.hash || '#/');
+    window.addEventListener('hashchange', handle);
+    return () => window.removeEventListener('hashchange', handle);
+  }, []);
+
+  const renderRoute = () => {
+    if (route.startsWith('#/author')) return <AuthorPage />;
+    if (route.startsWith('#/work')) return <WorkPage />;
+    return <HomePage />;
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
-      {/* Hero with interactive Spline */}
-      <Hero />
-
-      {/* Split identity section */}
-      <DualProfile />
-
-      {/* Academic output */}
-      <Publications />
-
-      {/* Industry work + contact */}
-      <Projects />
-
-      {/* Footer */}
-      <footer className="border-t border-white/10 bg-slate-950/80 py-8 text-center text-slate-400">
-        <p>
-          © {new Date().getFullYear()} Dr. Jordan Hayes — Mechanical Professor & Engineering Lead
-        </p>
-      </footer>
-    </div>
+    <Layout>
+      {renderRoute()}
+    </Layout>
   );
 }
 
